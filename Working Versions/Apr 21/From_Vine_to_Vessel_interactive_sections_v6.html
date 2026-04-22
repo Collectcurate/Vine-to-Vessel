@@ -1,0 +1,2445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Vine to Vessel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Cinzel:wght@400;500&family=Raleway:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a09;
+    --bg-2: #0f0f0d;
+    --bg-3: #080807;
+    --border: rgba(255,255,255,0.07);
+    --cream: #f0ede6;
+    --cream-dim: #c8c4bc;
+    --muted: #888880;
+    --faint: #444440;
+    --accent: #b896b5;
+    --accent-dim: #8a6e89;
+    --font-display: 'Cinzel', serif;
+    --font-body: 'Cormorant Garamond', serif;
+    --font-ui: 'Raleway', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--cream);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── PAGES ── */
+  .page { display: none; min-height: 100vh; }
+  .page.active { display: block; animation: fadeIn 0.95s cubic-bezier(0.22, 1, 0.36, 1); }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+
+  /* ── GREEK BORDER ORNAMENT ── */
+  .greek-border {
+    width: 100%;
+    height: 12px;
+    background-image: repeating-linear-gradient(
+      90deg,
+      var(--accent-dim) 0px, var(--accent-dim) 6px,
+      transparent 6px, transparent 12px,
+      var(--accent-dim) 12px, var(--accent-dim) 14px,
+      transparent 14px, transparent 20px
+    );
+    opacity: 0.35;
+  }
+
+  .meander-border {
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+    opacity: 0.3;
+  }
+  .meander-border svg { width: 100%; height: 14px; }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 48px;
+    border-bottom: 0.5px solid var(--border);
+    background: rgba(10,10,9,0.92);
+    backdrop-filter: blur(12px);
+  }
+  .topbar-logo {
+    font-family: var(--font-display);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--cream-dim);
+    cursor: pointer;
+    text-transform: uppercase;
+  }
+  .topbar-logo:hover { color: var(--accent); transition: color 0.2s; }
+  .topbar-nav { display: flex; gap: 32px; align-items: center; }
+  .topbar-nav a {
+    font-family: var(--font-ui);
+    font-size: 10px;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--faint);
+    cursor: pointer;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .topbar-nav a:hover, .topbar-nav a.active-nav { color: var(--accent); }
+  .topbar-counter {
+    font-family: var(--font-ui);
+    font-size: 10px;
+    color: var(--faint);
+    letter-spacing: 0.08em;
+  }
+
+  /* ── LANDING ── */
+  #page-landing {
+    display: none;
+    flex-direction: column; align-items: center; justify-content: center;
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+  }
+  #page-landing.active { display: flex; }
+
+.landing-bg-pattern {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.landing-bg-pattern::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background-image:
+    linear-gradient(rgba(10,10,9,0.85), rgba(10,10,9,0.95)),
+    url("Landing-Page-Graphics/eyes.png");
+
+  background-size: 60%;
+  background-position: center 300px;
+  background-repeat: no-repeat;
+
+  opacity: 0.65;
+}
+
+.landing-bg-pattern::after {
+  content: "";
+  position: absolute;
+
+  width: 400px;        
+  height: 400px;
+
+  bottom: 40px;         
+  right: 20px;          
+
+  background-image: url("Landing-Page-Graphics/Dionysus.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+
+  opacity: 0.3;          
+  pointer-events: none;
+}
+
+.landing-transition.visible {
+  opacity: 1;
+}
+
+  /* Decorative SVG figures - landing */
+  .landing-figure-left, .landing-figure-right {
+    position: absolute; bottom: 0; opacity: 0.12;
+    pointer-events: none;
+  }
+  .landing-figure-left { left: 40px; }
+  .landing-figure-right { right: 40px; transform: scaleX(-1); }
+
+  .landing-content {
+  text-align: center;
+  z-index: 3;
+  position: relative;
+  padding: 120px 32px 80px;
+  max-width: 800px;
+}
+
+  .landing-eyebrow {
+    font-family: var(--font-ui);
+    font-size: 10px;
+    font-weight: 300;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 32px;
+  }
+
+  .landing-title {
+    font-family: var(--font-display);
+    font-size: clamp(42px, 7vw, 80px);
+    font-weight: 400;
+    line-height: 1.1;
+    color: var(--cream);
+    margin-bottom: 12px;
+    letter-spacing: 0.04em;
+  }
+
+  .landing-subtitle {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: clamp(16px, 2vw, 22px);
+    font-weight: 300;
+    color: var(--accent);
+    margin-bottom: 48px;
+    letter-spacing: 0.04em;
+  }
+
+  .landing-divider {
+    width: 1px; height: 48px;
+    background: linear-gradient(to bottom, transparent, var(--accent-dim), transparent);
+    margin: 0 auto 48px;
+  }
+
+  .landing-intro {
+    font-family: var(--font-body);
+    font-size: 22px;
+    font-weight: 300;
+    color: var(--cream-dim);
+    line-height: 1.85;
+    margin-bottom: 64px;
+  }
+
+  .landing-prompt {
+    font-family: var(--font-body);
+    font-size: 26px;
+    font-style: italic;
+    color: var(--cream-dim);
+    margin-bottom: 40px;
+    line-height: 1.5;
+  }
+  .landing-prompt em { color: var(--accent); font-style: italic; }
+
+  .btn-primary {
+    display: inline-block;
+    font-family: var(--font-ui);
+    font-size: 11px;
+    font-weight: 300;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--cream);
+    border: 0.5px solid rgba(184,150,181,0.4);
+    padding: 14px 40px;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: transparent;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-primary::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: rgba(184,150,181,0.08);
+    transform: translateX(-100%);
+    transition: transform 0.3s;
+  }
+  .btn-primary:hover::before { transform: translateX(0); }
+  .btn-primary:hover { border-color: var(--accent); }
+
+  .scroll-cue {
+    position: absolute;
+    z-index: 3;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    animation: bounce 2s ease-in-out infinite;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+}
+  .scroll-cue.visible {
+  opacity: 1;
+  pointer-events: auto;
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(6px); }
+  }
+  .scroll-cue span {
+    font-family: var(--font-ui); font-size: 9px; color: var(--faint);
+    letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .chevrons { color: var(--accent-dim); font-size: 18px; line-height: 0.7; }
+
+  /* ── ACT INTRO PAGE ── */
+  .act-page { padding-top: 70px; }
+  #page-act-1.active, #page-act-2.active, #page-act-3.active, #page-act-4.active { display: block; }
+
+  .act-hero {
+    position: relative;
+    min-height: 52vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    overflow: hidden;
+    border-bottom: none;
+  }
+
+  .act-hero-bg {
+    position: absolute; inset: 0;
+    background-image: radial-gradient(ellipse 70% 50% at 50% 70%, rgba(184,150,181,0.05) 0%, transparent 70%);
+  }
+
+  /* Greek figure frieze strip */
+.frieze-strip {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  opacity: 0.20;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+  .frieze-strip svg { width: 100%; height: 100%; }
+  
+
+.frieze-act1 {
+  background-image: url("act-1/background.png");
+  background-repeat: repeat-x;
+  background-size: auto 100%;
+  background-position: 0 0;
+  /*animation: frieze-scroll 30s linear infinite; If i want scroll frieze*/
+}
+
+@keyframes frieze-scroll {
+  from { background-position: 0 0; }
+  to { background-position: -900px 0; }
+}
+
+.image-frieze2 {
+  display: flex;
+  align-items: flex-end;
+  gap: 18px;
+  padding: 0 24px 8px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.image-frieze2 img {
+  flex: 0 0 auto;
+  height: 85px;    
+  width: auto;
+  object-fit: contain;
+  opacity: 1;
+}
+
+.image-frieze3 {
+  display: flex;
+  align-items: flex-end;
+  gap: 40px;
+  padding: 0 24px 8px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.image-frieze3 img {
+  flex: 0 0 auto;
+  height: 120px;    
+  width: auto;
+  object-fit: contain;
+  opacity: 1;
+}
+
+.act-1-hero-bg-image {
+  position: relative;
+  background-image: url("act-1/background.png");
+  background-size: cover;
+  background-position: 50% 30%;
+  background-repeat: no-repeat;
+  overflow: hidden;
+}
+
+.act-1-hero-bg-image::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  background: var(--bg);
+  opacity: var(--act1-fade, 1);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.act-1-hero-bg-image .act-hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+.act-hero-content {
+  text-align: center;
+  z-index: 1;
+  padding: 40px 32px 110px;
+}
+  .act-number {
+    font-family: var(--font-ui);
+    font-size: 10px; font-weight: 300;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 20px;
+  }
+  .act-title {
+    font-family: var(--font-display);
+    font-size: clamp(32px, 5vw, 60px);
+    font-weight: 400; line-height: 1.15;
+    color: var(--cream);
+    letter-spacing: 0.06em;
+  }
+  .act-title-italic {
+    font-family: var(--font-body);
+    font-style: italic; font-weight: 300;
+    font-size: clamp(18px, 2.5vw, 28px);
+    color: var(--accent); margin-top: 10px;
+    display: block; letter-spacing: 0.04em;
+  }
+
+
+  /* ── ACT ENTRY ANIMATION ── */
+  .act-page .act-hero,
+  .act-page .act-hero-content,
+  .act-page .frieze-strip,
+  .act-page .act-narrative,
+  .act-page .objects-label,
+  .act-page .objects-grid,
+  .act-page .act-nav-strip {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .act-page .act-hero,
+    .act-page .act-hero-content,
+    .act-page .frieze-strip,
+    .act-page .act-narrative,
+    .act-page .objects-label,
+    .act-page .objects-grid,
+    .act-page .act-nav-strip {
+      opacity: 1;
+      transform: none;
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+
+  /* Act narrative + objects grid */
+  .act-body { padding: 64px 80px; max-width: 1200px; margin: 0 auto; }
+
+  .act-narrative {
+  max-width: 700px;
+  margin: 0 auto 80px;
+  }
+  .act-narrative-text {
+    max-width:fit-content;
+    font-family: var(--font-body);
+    font-size: 22px; font-weight: 300;
+    color: var(--cream-dim); line-height: 1.85;
+  }
+  .act-narrative-text p { margin-bottom: 20px; }
+  .act-narrative-text em { color: var(--accent); font-style: italic; }
+  .act-narrative-meta {
+    border-left: 0.5px solid var(--border);
+    padding-left: 40px;
+    display: flex; flex-direction: column; gap: 24px;
+  }
+  .act-meta-item .meta-l {
+    font-family: var(--font-ui); font-size: 9px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--faint); margin-bottom: 4px;
+  }
+  .act-meta-item .meta-v {
+    font-family: var(--font-body); font-size: 16px;
+    color: var(--cream-dim);
+  }
+
+  /* Objects grid */
+  .objects-label {
+    font-family: var(--font-ui); font-size: 9px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--faint); margin-bottom: 32px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .objects-label::after {
+    content: ''; flex: 1; height: 0.5px;
+    background: var(--border);
+  }
+
+  .objects-grid {
+    display: grid;
+    gap: 2px;
+  }
+  .objects-grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .objects-grid-2 { grid-template-columns: repeat(2, 1fr); }
+  .objects-grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+  .object-card {
+    background: var(--bg-2);
+    border: 0.5px solid var(--border);
+    cursor: pointer;
+    transition: all 0.3s;
+    overflow: hidden;
+    position: relative;
+  }
+  .object-card:hover { border-color: rgba(184,150,181,0.3); background: #131311; }
+  .object-card:hover .object-card-arrow { opacity: 1; transform: translateX(0); }
+
+  .object-card-img {
+    width: 100%; aspect-ratio: 3/4;
+    background: var(--bg-3);
+    display: flex; align-items: center; justify-content: center;
+    border-bottom: 0.5px solid var(--border);
+    overflow: hidden;
+    position: relative;
+  }
+  .object-card-img img {
+    width: 100%; height: 100%; object-fit: contain;
+    padding: 24px;
+    filter: drop-shadow(0 4px 20px rgba(0,0,0,0.6));
+  }
+
+
+  .object-card-info { padding: 20px 24px; }
+  .object-card-num {
+    font-family: var(--font-ui); font-size: 9px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent-dim); margin-bottom: 6px;
+  }
+  .object-card-title {
+    font-family: var(--font-body); font-size: 16px;
+    color: var(--cream); margin-bottom: 4px;
+    line-height: 1.3;
+  }
+  .object-card-date {
+    font-family: var(--font-ui); font-size: 11px;
+    font-weight: 300; color: var(--faint);
+  }
+  .object-card-arrow {
+    position: absolute; bottom: 20px; right: 20px;
+    font-size: 12px; color: var(--accent);
+    opacity: 0; transform: translateX(-4px);
+    transition: all 0.2s;
+  }
+
+  /* Act navigation */
+  .act-nav-strip {
+    display: flex; border-top: 0.5px solid var(--border);
+    margin-top: 80px;
+  }
+  .act-nav-btn {
+    flex: 1; padding: 28px 40px;
+    display: flex; flex-direction: column; gap: 6px;
+    cursor: pointer; transition: background 0.2s;
+    border: none; background: transparent; text-align: left;
+  }
+  .act-nav-btn:first-child { border-right: 0.5px solid var(--border); }
+  .act-nav-btn:hover { background: var(--bg-2); }
+  .act-nav-btn:last-child { text-align: right; align-items: flex-end; }
+  .nav-dir-label {
+    font-family: var(--font-ui); font-size: 9px;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint);
+  }
+  .nav-act-name {
+    font-family: var(--font-body); font-size: 16px; color: var(--cream-dim);
+  }
+
+  /* ── OBJECT DETAIL PAGE ── */
+#page-object {
+  display: none;
+}
+
+#page-object.active {
+  display: block;
+}
+
+.object-page {
+  position: fixed;
+  inset:0;   
+  z-index: 200;
+  background: var(--bg);
+  overflow-y: auto;
+}
+
+  .object-topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 48px;
+    border-bottom: 0.5px solid var(--border);
+    background: var(--bg);
+  }
+  .object-topbar-back {
+    font-family: var(--font-ui); font-size: 13px; font-weight: 300;
+    letter-spacing: 0.06em; color: var(--muted);
+    cursor: pointer; transition: color 0.2s;
+  }
+  .object-topbar-back:hover { color: var(--accent); }
+  .object-topbar-breadcrumb {
+    font-family: var(--font-ui); font-size: 13px;
+    letter-spacing: 0.08em; color: var(--faint);
+  }
+  .object-topbar-counter {
+    font-family: var(--font-ui); font-size: 13px;
+    letter-spacing: 0.06em; color: var(--faint);
+  }
+
+  .object-layout {
+   display: grid;
+    grid-template-columns: minmax(320px, 0.95fr) minmax(360px, 0.75fr);
+   min-height: calc(100vh - 54px - 56px);
+    border-bottom: 0.5px solid var(--border);
+   max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .object-img-pane {
+    border-right: 0.5px solid var(--border);
+   display: flex;
+    align-items: center;
+   justify-content: center;
+    padding: 32px 24px;
+    background: var(--bg-3);
+   position: sticky;
+    top: 54px;
+    height: calc(100vh - 54px);
+   overflow: hidden;
+    min-width: 0;
+  }
+  .object-img-pane {
+  position: sticky;
+  top: 54px;
+  height: calc(100vh - 54px);
+  display: grid;
+  grid-template-columns: 48px 1fr 48px;
+  grid-template-rows: 1fr auto;
+  align-items: center;
+  gap: 16px;
+  padding: 32px 24px;
+  background: var(--bg-3);
+  border-right: 0.5px solid var(--border);
+  overflow: hidden;
+  min-width: 0;
+}
+
+.object-img-main {
+  grid-column: 2;
+  grid-row: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 0;
+}
+
+.object-img-main img {
+  max-width: 100%;
+  max-height: 60vh;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 40px rgba(0,0,0,0.7));
+}
+
+.carousel-arrow {
+  background: none;
+  border: 0.5px solid var(--border);
+  color: var(--cream-dim);
+  font-size: 28px;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+}
+
+.carousel-arrow:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.carousel-arrow-left {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.carousel-arrow-right {
+  grid-column: 3;
+  grid-row: 1;
+}
+
+.object-thumbs {
+  grid-column: 1 / 4;
+  grid-row: 2;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding-top: 8px;
+}
+
+.object-thumb {
+  width: 56px;
+  height: 56px;
+  border: 0.5px solid var(--border);
+  background: var(--bg-2);
+  cursor: pointer;
+  overflow: hidden;
+  opacity: 0.65;
+}
+
+.object-thumb.active {
+  border-color: var(--accent);
+  opacity: 1;
+}
+
+.object-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+  .object-img-pane img {
+    max-width:100%; max-height: 60vh;
+    object-fit: contain;
+    filter: drop-shadow(0 8px 40px rgba(0,0,0,0.7));
+  }
+
+.object-zoom-wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 60vh;
+  overflow: hidden;
+  cursor: zoom-in;
+}
+
+.object-zoom-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  transform-origin: center center;
+  transition: transform 0.08s ease-out;
+  pointer-events: none;
+}
+
+.object-zoom-wrap.is-zooming .object-zoom-img {
+  transform: scale(2.2);
+}
+  .object-info-pane {
+    padding: 20px 20px 0;
+    overflow-y: auto;
+    min-width: 0;
+  }
+
+  .object-section-tag {
+    font-family: var(--font-ui); font-size: 9px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 20px;
+  }
+  .object-h1 {
+    font-family: var(--font-display);
+    font-size: clamp(20px, 2.4vw, 32px);
+    font-weight: 400; color: var(--cream);
+    margin-bottom: 8px; line-height: 1.2;
+    letter-spacing: 0.04em;
+  }
+  .object-date-line {
+    font-family: var(--font-body); font-size: 14px;
+    color: var(--muted); margin-bottom: 4px;
+  }
+  .object-inst-line {
+    font-family: var(--font-ui); font-size: 12px; font-weight: 300;
+    color: var(--faint); margin-bottom: 25px;
+    letter-spacing: 0.04em;
+  }
+  .object-inst-line a {
+  color: var(--cream-dim);
+  text-decoration: none;
+  border-bottom: 0.5px solid var(--border);
+  transition: all 0.2s;
+}
+
+.object-inst-line a:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+  .object-label-text {
+    font-family: var(--font-body); font-size: 17px; font-weight: 300;
+    color: var(--cream-dim); line-height: 1.85;
+    margin-bottom: 25px;
+  }
+  .object-label-text p {
+  padding-left: 13px;
+}
+  .object-label-text em { color: var(--accent); font-style: italic; }
+  .object-label-text p { margin-bottom: 14px; }
+
+  .object-label-title {
+  font-size: 19px;
+  font-weight: 500;
+  color: var(--cream);
+  margin-bottom: 14px;
+  letter-spacing: 0.03em;
+  border-left: 1px solid var(--accent-dim);
+  padding-left: 12px;
+}
+
+.object-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  max-width: 600px;
+  margin-bottom: 25px;
+}
+
+.object-meta-cell {
+  padding: 16px 18px;
+  border-bottom: 0.5px solid var(--border);
+}
+
+.object-meta-cell:nth-child(odd) {
+  border-right: 0.5px solid var(--border);
+}
+.object-meta-cell:nth-child(n+3) {
+  border-bottom: none;
+}
+
+@media (max-width: 768px) {
+  .object-meta-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .object-meta-cell {
+    border-right: none !important;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .object-meta-cell:last-child {
+    border-bottom: none;
+  }
+}
+
+.meta-lbl {
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: var(--cream);
+  margin-bottom: 6px;
+}
+
+.meta-val {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--cream-dim);
+  line-height: 1.5;
+}
+
+  .object-fun-fact {
+    display: flex; align-items: center; gap: 24px;
+    padding: 24px 0 40px;
+    border-top: 0.5px solid var(--border);
+    margin-bottom: 0;
+  }
+  .fun-fact-label {
+    font-family: var(--font-ui); font-size: 9px;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--faint); flex-shrink: 0; padding-top: 2px;
+  }
+  .fun-fact-rule { width: 0.5px; background: var(--border); align-self: stretch; flex-shrink: 0; }
+  .fun-fact-text {
+    font-family: var(--font-body); font-size: 14px;
+    color: var(--muted); line-height: 1.7;
+  }
+  .fun-fact-text em { color: var(--accent); font-style: normal; }
+
+  .object-nav-strip { display: flex; border-top: 0.5px solid var(--border); }
+  .obj-nav-btn {
+    flex: 1; padding: 20px 48px;
+    cursor: pointer; display: flex; flex-direction: column; gap: 4px;
+    background: none; border: none;
+    transition: background 0.2s;
+  }
+  .obj-nav-btn:first-child { border-right: 0.5px solid var(--border);text-align: left;align-items: flex-start; }
+  .obj-nav-btn:hover { background: var(--bg-2); }
+  .obj-nav-btn:last-child { text-align: right; align-items: flex-end; }
+  .obj-nav-dir {
+    font-family: var(--font-ui); font-size: 10px;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint);
+  }
+  .obj-nav-name {
+    font-family: var(--font-body); font-size: 14px; color: var(--muted);
+  }
+
+  /* ── FINAL PAGE ── */
+  #page-final.active { display: block; }
+  .final-page { padding-top: 70px; max-width: 860px; margin: 0 auto; padding-left: 80px; padding-right: 80px; padding-bottom: 120px; }
+  .final-eyebrow {
+    font-family: var(--font-ui); font-size: 9px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--accent); margin: 64px 0 24px;
+  }
+  .final-h1 {
+    font-family: var(--font-display); font-size: 40px;
+    font-weight: 400; color: var(--cream);
+    margin-bottom: 64px; letter-spacing: 0.06em;
+  }
+
+  .final-section-title {
+    font-family: var(--font-ui); font-size: 10px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--faint); margin-bottom: 24px;
+    padding-bottom: 12px; border-bottom: 0.5px solid var(--border);
+  }
+
+  .final-text {
+    font-family: var(--font-body); font-size: 16px; font-weight: 300;
+    color: var(--cream-dim); line-height: 1.85;
+    margin-bottom: 48px;
+  }
+
+  .bib-list { list-style: none; margin-bottom: 64px; }
+  .bib-list li {
+    font-family: var(--font-body); font-size: 15px; font-weight: 300;
+    color: var(--cream-dim); line-height: 1.7;
+    padding: 14px 0; border-bottom: 0.5px solid var(--border);
+    padding-left: 24px; position: relative;
+  }
+  .bib-list li::before {
+    content: '—'; position: absolute; left: 0;
+    color: var(--accent-dim); font-size: 13px;
+  }
+
+  .final-closing {
+    text-align: center; padding: 64px 0;
+    border-top: 0.5px solid var(--border);
+    margin-top: 40px;
+  }
+  .final-closing-title {
+    font-family: var(--font-display); font-size: 28px;
+    color: var(--accent-dim); margin-bottom: 16px;
+    letter-spacing: 0.08em;
+  }
+  .final-closing-text {
+    font-family: var(--font-body); font-style: italic;
+    font-size: 16px; color: var(--faint);
+  }
+
+  /* ── MEANDER SVG PATTERN ── */
+  @keyframes meander-scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  .meander-animate { animation: meander-scroll 40s linear infinite; }
+  .hover-image-trigger {
+  position: relative;
+  display: inline-block;
+  color: var(--font-body);
+  border-bottom: 0.5px dotted var(--accent-dim);
+  cursor: pointer;
+}
+
+.hover-image-box {
+  position: absolute;
+  bottom: 140%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: none;
+  width: 220px;
+  padding: 10px;
+  background: rgba(10,10,9,0.98);
+  border: 0.5px solid var(--border);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.45);
+  z-index: 999;
+}
+
+.hover-image-box img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.hover-image-trigger:hover .hover-image-box {
+  display: block;
+}
+
+
+.inline-link {
+  color: var(--cream-dim);
+  text-decoration: none;
+  border-bottom: 0.5px solid rgba(255,255,255,0.2);
+  transition: all 0.2s ease;
+}
+
+.inline-link:hover,
+.inline-link:focus-visible {
+  color: var(--accent);
+  border-color: var(--accent);
+  outline: none;
+}
+
+.highlight-target {
+  animation: highlightFade 2s ease;
+}
+
+@keyframes highlightFade {
+  0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.35); }
+  50% { box-shadow: 0 0 20px 6px rgba(255,255,255,0.16); }
+  100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
+}
+
+
+
+  
+  .page-transition-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(8,8,7,0.9);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.9s ease;
+    z-index: 180;
+  }
+
+  .page-transition-overlay.is-active {
+    opacity: 1;
+  }
+
+  .obj-nav-btn.is-section-jump .obj-nav-dir {
+    color: var(--accent-dim);
+  }
+.progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 2px;
+    background: linear-gradient(90deg, #7a5e79, #5f475d);
+    z-index: 1000;
+    box-shadow: 0 0 10px rgba(95,71,93,0.35);
+  }
+
+  .reveal-on-scroll,
+  .landing-cta-question,
+  .landing-cta-button {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .reveal-on-scroll.is-visible,
+  .landing-cta-question.is-visible,
+  .landing-cta-button.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .landing-cta-question {
+    transition-delay: 0.12s;
+  }
+
+  .landing-cta-button {
+    transition-delay: 0.34s;
+  }
+
+  .act-page.is-transitioning .act-hero-content,
+  .act-page.is-transitioning .frieze-strip,
+  .act-page.is-transitioning .act-narrative,
+  .act-page.is-transitioning .objects-label,
+  .act-page.is-transitioning .objects-grid,
+  .act-page.is-transitioning .act-nav-strip {
+    opacity: 0;
+    transform: translateY(34px);
+  }
+
+  .act-page.is-transitioning.is-entered .act-hero-content,
+  .act-page.is-transitioning.is-entered .frieze-strip,
+  .act-page.is-transitioning.is-entered .act-narrative,
+  .act-page.is-transitioning.is-entered .objects-label,
+  .act-page.is-transitioning.is-entered .objects-grid,
+  .act-page.is-transitioning.is-entered .act-nav-strip {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .act-page.is-transitioning .act-hero-content {
+    transition: opacity 2.6s ease, transform 2.6s ease;
+  }
+  .act-page.is-transitioning .frieze-strip {
+    transition: opacity 2.8s ease 0.22s, transform 2.8s ease 0.22s;
+  }
+  .act-page.is-transitioning .act-narrative {
+    transition: opacity 2.6s ease 0.42s, transform 2.6s ease 0.42s;
+  }
+  .act-page.is-transitioning .objects-label {
+    transition: opacity 2.3s ease 0.72s, transform 2.3s ease 0.72s;
+  }
+  .act-page.is-transitioning .objects-grid {
+    transition: opacity 2.4s ease 0.92s, transform 2.4s ease 0.92s;
+  }
+  .act-page.is-transitioning .act-nav-strip {
+    transition: opacity 2.2s ease 1.18s, transform 2.2s ease 1.18s;
+  }
+
+  .landing-intro {
+    max-width: 620px;
+    margin: 0 auto 64px;
+  }
+
+  .landing-intro p {
+    margin-bottom: 18px;
+  }
+
+  .landing-prompt {
+    max-width: 680px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .object-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+  }
+
+  .object-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 28px rgba(0,0,0,0.32);
+  }
+
+  .object-card-img img {
+    transition: transform 0.5s ease, filter 0.5s ease;
+  }
+
+  .object-card:hover .object-card-img img {
+    transform: scale(1.04);
+    filter: drop-shadow(0 8px 26px rgba(0,0,0,0.7));
+  }
+
+  .object-card:focus-within,
+  .object-card:focus-visible,
+  .btn-primary:focus-visible,
+  .topbar-nav a:focus-visible,
+  .topbar-logo:focus-visible,
+  .carousel-arrow:focus-visible,
+  .object-thumb:focus-visible,
+  .obj-nav-btn:focus-visible,
+  .act-nav-btn:focus-visible,
+  .inline-link:focus-visible {
+    outline: 1px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  .object-info-pane {
+    padding: 32px 28px 0;
+  }
+
+  .object-label-text {
+    font-size: 18px;
+    line-height: 1.9;
+  }
+
+  .meta-lbl {
+    font-family: var(--font-ui);
+    font-size: 11px;
+    font-weight: 300;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--faint);
+    margin-bottom: 8px;
+  }
+
+  .meta-val {
+    font-size: 15px;
+    color: var(--cream-dim);
+  }
+
+  .hover-image-box {
+    width: 260px;
+    padding: 12px;
+    border: 0.5px solid rgba(255,255,255,0.12);
+    box-shadow: 0 12px 34px rgba(0,0,0,0.52);
+  }
+
+  .act-page {
+    scroll-margin-top: 88px;
+  }
+
+  #page-act-1 { background: #0b0b0a; }
+  #page-act-2 { background: #0a0a09; }
+  #page-act-3 { background: #090908; }
+  #page-act-4 { background: #080807; }
+
+  #page-act-1 .object-card { transition-duration: 0.42s; }
+  #page-act-2 .object-card { transition-duration: 0.26s; }
+  #page-act-3 .object-card:hover { transform: translateY(-6px); }
+  #page-act-4 .object-card,
+  #page-act-4 .object-card-img img { transition-duration: 0.38s; }
+
+  .object-card.highlight-target {
+    animation: highlightFade 2s ease;
+  }
+
+  @keyframes highlightFade {
+    0% { box-shadow: 0 0 0 0 rgba(184,150,181,0); border-color: rgba(184,150,181,0.18); }
+    35% { box-shadow: 0 0 0 6px rgba(184,150,181,0.12); border-color: rgba(184,150,181,0.55); }
+    100% { box-shadow: 0 0 0 0 rgba(184,150,181,0); border-color: rgba(255,255,255,0.07); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+    .reveal-on-scroll,
+    .landing-cta-question,
+    .landing-cta-button,
+    .act-page .act-hero-content,
+    .act-page .act-narrative,
+    .act-page .objects-label,
+    .act-page .objects-grid,
+    .act-page .act-nav-strip {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  }
+
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 1100px) {
+    .topbar { padding: 14px 24px; }
+    .topbar-nav { display: none; }
+    .object-layout { grid-template-columns: 1fr; }
+    .object-img-pane { position: relative; top: 0; height: 60vw; }
+    .act-body { padding: 40px 24px; }
+    .act-narrative { grid-template-columns: 1fr; gap: 32px; }
+    .act-narrative-meta { border-left: none; border-top: 0.5px solid var(--border); padding-left: 0; padding-top: 24px; }
+    .objects-grid-4 { grid-template-columns: repeat(2, 1fr); }
+    .final-page { padding-left: 24px; padding-right: 24px; }
+  }
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progress-bar"></div>
+<div class="page-transition-overlay" id="page-transition-overlay"></div>
+
+<!-- ── GLOBAL TOPBAR ── -->
+<nav class="topbar" id="topbar">
+  <div class="topbar-logo" onclick="showPage('landing')">From Vine to Vessel</div>
+  <div class="topbar-nav">
+    <a onclick="showPageAtHero('act-1')" id="nav-act-1">I · The Vine & the God</a>
+    <a onclick="showPageAtHero('act-2')" id="nav-act-2">II · From Vessel to Vessel</a>
+    <a onclick="showPageAtHero('act-3')" id="nav-act-3">III · The Symposium</a>
+    <a onclick="showPageAtHero('act-4')" id="nav-act-4">IV · Wine, Festivals & the Dead</a>
+    <a onclick="showPage('final')" id="nav-final">Further Reading</a>
+  </div>
+  <div class="topbar-counter" id="topbar-counter"></div>
+</nav>
+
+
+<!-- ══════════════════════════════════════════ -->
+<!-- PAGE: LANDING                             -->
+<!-- ══════════════════════════════════════════ -->
+<div class="page" id="page-landing">
+  <div class="landing-bg-pattern"></div>
+
+  <!--decorative elements -->
+<img src="landing-page-graphics/border.png" alt="banner" width="100%" style="margin-top:35px;">
+
+  <!-- Meander border top -->
+  <div style="position:absolute; top:54px; left:0; right:0;">
+    <svg viewBox="0 0 400 14" width="100%" height="14" preserveAspectRatio="none">
+    </svg>
+  </div>
+
+  <div class="landing-content">
+    <div class="landing-eyebrow">Greek Vases at the Royal Ontario Museum · Online Exhibition </div>
+    <div class="landing-title">From Vine<br>to Vessel</div>
+    <div class="landing-subtitle">Wine, Ritual, and the Art of the Greek Symposium</div>
+    <div class="landing-divider"></div>
+    <div class="landing-intro">
+     <p><em>Dionysus never really went away.</em></p>
+     <p>In Ancient Greece, wine was more than just a drink. It was a gift from the gods, and a force that shaped everyday life. It marked celebration and ritual, structured social gatherings, and accompanied people from childhood to the grave. </p>
+     <p>To trace the story of ancient wine, we turn to what survives:<em> the vessels</em>. Amphorae carried it across the Mediterranean, kraters mixed it, and cups brought it to drinkers in the symposium. Through these objects, journey of wine through the ancient world comes into view.</p>
+     <p>As you move thorough the exhibition, follow that journey: from vineyard to vessel, from symposium to festival, and discover how wine connected myth, trade, and human experience. </p>
+    </div>
+    
+    <div class="landing-prompt landing-cta-question reveal-on-scroll">
+      Are you ready to take a journey through Ancient Greece<br>with the god of <em>wine & transformation?</em> 
+    </div>
+    <button class="btn-primary landing-cta-button reveal-on-scroll" onclick="handleEnter()">I'm ready</button>
+  </div>
+  <div class="landing-transition" id="landing-transition"></div>
+  <div class="scroll-cue" onclick="showPageAtHero('act-1')">
+    <span>Enter</span>
+    <div class="chevrons">⌄⌄</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- PAGE: ACT I — The Vine & the God         -->
+<!-- ══════════════════════════════════════════ -->
+<div class="page act-page" id="page-act-1">
+  <div class="act-hero act-1-hero-bg-image">
+    <div class="act-hero-content reveal-on-scroll" id="act-1-hero">
+      <div class="act-number">Act I · Objects 1–3</div>
+      <div class="act-title">The Vine & the God</div>
+      <span class="act-title-italic">Dionysus and the Origins of Wine</span>
+    </div>
+  </div>
+
+  <div class="act-body">
+    <div class="act-narrative">
+      <div class="act-narrative-text">
+        <p>Wine in Ancient Greece was never just a drink. </p>
+        <p>For the Greeks, it was a gift from <em>Dionysus</em>: a god said to have come from beyond their world, bringing wine with him. But wine did not begin in Greece alone. Its history stretches across older cultures of the eastern Mediterranean, where it was already being made, stored, and consumed.</p>
+        <p>In these vessels, myth and practice come together. Dionysus appears in the vineyard, while satyrs harvest grapes and tread them into wine. What you see is both story and process: the transformation of grapes into something intoxicating, understood at once as labour and as something divine.</p>
+      </div>
+    </div>
+
+    <div class="objects-label">Objects in this section</div>
+    <div class="objects-grid objects-grid-3">
+
+      <div class="object-card" onclick="showObject(1)">
+        <div class="object-card-img">
+          <img src="Act-1/MFA-amphora.png" alt="Storage Vessel for Wine" alt=" Amphora with Dionysus">
+        </div>
+        <div class="object-card-info">
+          <div class="object-card-num">Object 01</div>
+          <div class="object-card-title">Amphora with Scene of Dionysus</div>
+          <div class="object-card-date">c. 540–530 BCE · Greek, Archaic </div>
+        </div>
+        <div class="object-card-arrow">→</div>
+      </div>
+
+      <div class="object-card" onclick="showObject(2)">
+        <div class="object-card-img">
+          <img src="Act-1/storagejar.png" alt="Egyptian Wine Storage Vessel">
+        </div>
+        <div class="object-card-info">
+          <div class="object-card-num">Object 02</div>
+          <div class="object-card-title">Storage Jar for Wine</div>
+          <div class="object-card-date">c. 1539–1292 BCE · Egyptian, New Kingdom, Late Dynasty 18-Late Dynasty 19</div>
+        </div>
+        <div class="object-card-arrow">→</div>
+      </div>
+
+      <div class="object-card" onclick="showObject(3)">
+        <div class="object-card-img">
+          <img src="Act-1/MARTIN.png" alt="Amphora with Winemaking Scene">
+        </div>
+        <div class="object-card-info">
+          <div class="object-card-num">Object 03</div>
+          <div class="object-card-title">Amphora with Winemaking Scene</div>
+          <div class="object-card-date">c. 450–440 BCE · Greek, Archaic</div>
+        </div>
+        <div class="object-card-arrow">→</div>
+      </div>
+
+    </div>
+
+    <div class="act-nav-strip">
+      <button class="act-nav-btn" onclick="showPage('landing')" style="text-align:left;">
+        <div class="nav-dir-label">← Back</div>
+        <div class="nav-act-name">Introduction</div>
+      </button>
+      <button class="act-nav-btn" onclick="showPageAtHero('act-2')" style="text-align:right; align-items:flex-end;">
+        <div class="nav-dir-label">Next Act →</div>
+        <div class="nav-act-name">II · From Vessel to Vessel</div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- PAGE: ACT II — From Vessel to Vessel     -->
+<!-- ══════════════════════════════════════════ -->
+<div class="page act-page" id="page-act-2">
+  <div class="act-hero">
+    <div class="act-hero-bg"></div>
+    <div class="frieze-strip image-frieze2">
+  <img src="Act-2/Winetransportamphora.png" alt="Amphora silhouette">
+  <img src="Act-2/Friezeamphora.png" alt="Amphora silhouette">
+  <img src="Act-2/Winetransportamphora.png" alt="silhouette">
+  <img src="Act-2/Friezeamphora.png" alt="Amphora silhouette">
+  <img src="Act-2/Winetransportamphora.png" alt="Amphora silhouette">
+  <img src="Act-2/Friezeamphora.png" alt="silhouette">
+  <img src="Act-2/Winetransportamphora.png" alt="Amphora silhouette">
+  <img src="Act-2/Friezeamphora.png" alt="Amphora silhouette">
+  <img src="Act-2/Winetransportamphora.png" alt="silhouette">
+  <img src="Act-2/Friezeamphora.png" alt="Amphora silhouette">
+  <img src="Act-2/Winetransportamphora.png" alt="Amphora silhouette">
+  <img src="Act-2/Friezeamphora.png" alt="silhouette">
+  <img src="Act-2/Winetransportamphora.png" alt="Amphora silhouette">
+  <img src="Act-2/Friezeamphora.png" alt="silhouette">
+  <img src="Act-2/Winetransportamphora.png" alt="Amphora silhouette">
+  <img src="Act-2/Friezeamphora.png" alt="silhouette">
+  <img src="Act-2/Winetransportamphora.png" alt="Amphora silhouette">
+  <img src="Act-2/Friezeamphora.png" alt="silhouette">
+  <img src="Act-2/Winetransportamphora.png" alt="Amphora silhouette">
+  <img src="Act-2/Friezeamphora.png" alt="silhouette">
+  <img src="Act-2/Winetransportamphora.png" alt="Amphora silhouette">
+  <img src="Act-2/Friezeamphora.png" alt="silhouette">
+  <img src="Act-2/Winetransportamphora.png" alt="Amphora silhouette">
+  <img src="Act-2/Friezeamphora.png" alt="silhouette">
+  <img src="Act-2/Winetransportamphora.png" alt="Amphora silhouette">
+</div>
+    <div class="act-hero-content reveal-on-scroll" id="act-2-hero">
+      <div class="act-number">Act II · Objects 4–6</div>
+      <div class="act-title">From Vessel to Vessel</div>
+      <span class="act-title-italic">The Technology and Trade of Wine</span>
+    </div>
+  </div>
+
+  <div class="act-body">
+    <div class="act-narrative">
+      <div class="act-narrative-text">
+        <p>Wine <em>moved.</em></p>
+        <p>From vineyard to harbour, from ship to storehouse, it travelled across the Ancient Mediterranean in vessels built for that journey. These containers were not just decorative: they were designed to be carried, stacked, sealed and shipped over long distances.</p>
+        <p>Each stage of wine required a different vessel. Large transport amphorae carried wine across seas, stamped handles recorded its origin and movement, and mixing vessels prepared it for drinking. Together, the objects in this section traces wine’s passage from <em>commodity</em> to <em>experience</em>.</p>
+      </div>
+    </div>
+
+    <div class="objects-label">Objects in this section</div>
+    <div class="objects-grid objects-grid-3">
+
+      <div class="object-card" onclick="showObject(4)">
+        <div class="object-card-img">
+          <img src="act-2/winetransportamphora.png" alt=" Transport Amphora ">
+        </div>
+        <div class="object-card-info">
+          <div class="object-card-num">Object 04</div>
+          <div class="object-card-title">Wine Transport Amphora</div>
+          <div class="object-card-date">c. 560–550 BCE · Greek, Archaic</div>
+        </div>
+        <div class="object-card-arrow">→</div>
+      </div>
+
+      <div class="object-card" onclick="showObject(5)">
+        <div class="object-card-img">
+          <img src="act-2/handle.png" alt=" Amphora Handle with Stamp ">
+        </div>
+        <div class="object-card-info">
+          <div class="object-card-num">Object 05</div>
+          <div class="object-card-title">Fragment of an Amphora Handle</div>
+          <div class="object-card-date">c. 323-30 BCE · Greek, Hellenistic</div>
+        </div>
+        <div class="object-card-arrow">→</div>
+      </div>
+ <div class="object-card" id="krater-ref" onclick="showObject(6)">
+        <div class="object-card-img">
+          <img src="act-2/Krater.png" alt=" Column-Krater ">
+        </div>
+        <div class="object-card-info">
+          <div class="object-card-num">Object 06</div>
+          <div class="object-card-title"> Column Krater </div>
+          <div class="object-card-date">c. 440 BCE · Greek, Classical · Attributed to the Naples Painter</div>
+        </div>
+        <div class="object-card-arrow">→</div>
+      </div>
+    </div>
+
+    <div class="act-nav-strip">
+      <button class="act-nav-btn" onclick="showPageAtHero('act-1')">
+        <div class="nav-dir-label">← Previous Act</div>
+        <div class="nav-act-name">I · The Vine & the God</div>
+      </button>
+      <button class="act-nav-btn" onclick="showPageAtHero('act-3')" style="text-align:right; align-items:flex-end;">
+        <div class="nav-dir-label">Next Act →</div>
+        <div class="nav-act-name">III · The Symposium</div>
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════ -->
+<!-- PAGE: ACT III — The Symposium            -->
+<!-- ══════════════════════════════════════════ -->
+<div class="page act-page" id="page-act-3">
+  <div class="act-hero">
+    <div class="act-hero-bg"></div>
+    <div class="frieze-strip image-frieze3">
+  <img src="Act-3/dolphin.png" alt="dolphin warrior">
+  <img src="Act-3/dolphin.png" alt="dolphin warrior">
+  <img src="Act-3/dolphin.png" alt="dolphin warrior">
+  <img src="Act-3/dolphin.png" alt="dolphin warrior">
+  <img src="Act-3/dolphin.png" alt="dolphin warrior">
+  <img src="Act-3/dolphin.png" alt="dolphin warrior">
+  <img src="Act-3/dolphin.png" alt="dolphin warrior">
+  <img src="Act-3/dolphin.png" alt="dolphin warrior">
+  <img src="Act-3/dolphin.png" alt="dolphin warrior">
+  <img src="Act-3/dolphin.png" alt="dolphin warrior">
+  <img src="Act-3/dolphin.png" alt="dolphin warrior">
+  <img src="Act-3/dolphin.png" alt="dolphin warrior">
+  <img src="Act-3/dolphin.png" alt="dolphin warrior">
+  <img src="Act-3/dolphin.png" alt="dolphin warrior">
+  <img src="Act-3/dolphin.png" alt="dolphin warrior">
+  <img src="Act-3/dolphin.png" alt="dolphin warrior">
+  <img src="Act-3/dolphin.png" alt="dolphin warrior">
+  <img src="Act-3/dolphin.png" alt="dolphin warrior">
+</div>
+
+    <div class="act-hero-content reveal-on-scroll" id="act-3-hero">
+      <div class="act-number">Act III · Objects 7–10</div>
+      <div class="act-title">The Symposium</div>
+      <span class="act-title-italic">Drinking, Performance, and the Ritual of the Andron</span>
+    </div>
+  </div>
+
+  <div class="act-body">
+    <div class="act-narrative">
+      <div class="act-narrative-text">
+        <p>The symposium – literally "<em>drinking together</em>" – was central to the social life of elite Greek men. Held in a dedicated room in homes called the <em>Andron</em>, it was a structured gathering shaped by ritual, conversation, and performance.</p>
+        <p>Guests reclined on couches, drank from shared vessels, listened to music, and debated philosophy, politics, and poetry. Wine was always mixed with water, carefully served, and consumed according to custom. </p>
+        <p>The objects in this section reveal the many roles these vessels played: tools for drinking, markers of status, and carriers of myth.</p>
+      </div>
+    </div>
+
+    <div class="objects-label">Objects in this section</div>
+    <div class="objects-grid objects-grid-4">
+
+      <div class="object-card" onclick="showObject(7)">
+        <div class="object-card-img">
+          <img src="Act-3/romkylix.png" alt="Kylix of boxer and Symposiast">
+        </div>
+        <div class="object-card-info">
+          <div class="object-card-num">Object 07</div>
+          <div class="object-card-title">Kylix with Boxers and Symposiast</div>
+          <div class="object-card-date">c. 490-480 BCE · Greek, Archaic · Attributed to the Painter of the Paris Gigantomachy</div>
+        </div>
+        <div class="object-card-arrow">→</div>
+      </div>
+
+      <div class="object-card" onclick="showObject(8)">
+        <div class="object-card-img">
+          <img src="act-3/oinochoe.png" alt="Dionysus Oinochoe">
+        </div>
+        <div class="object-card-info">
+          <div class="object-card-num">Object 08</div>
+          <div class="object-card-title">Oinochoe in the Shape of Dionysus and Panther</div>
+          <div class="object-card-date">c. 350 BCE · Greek, Classical</div>
+        </div>
+        <div class="object-card-arrow">→</div>
+      </div>
+
+      <div class="object-card" onclick="showObject(9)">
+        <div class="object-card-img">
+          <img src="Act-3/Psykter.png" alt="Dolphin Psykter">
+        </div>
+        <div class="object-card-info">
+          <div class="object-card-num">Object 09</div>
+          <div class="object-card-title">Psykter</div>
+          <div class="object-card-date">c. 520 - 510 BCE · Greek, Archaic · Attributed to Oltos</div>
+        </div>
+        <div class="object-card-arrow">→</div>
+      </div>
+
+      <div class="object-card" onclick="showObject(10)">
+        <div class="object-card-img">
+         <img src="Act-3/kylix.png" alt="Dionysos cup">
+        </div>
+        <div class="object-card-info">
+          <div class="object-card-num">Object 10</div>
+          <div class="object-card-title">Kylix, Known as the Dionysus Cup</div>
+          <div class="object-card-date">c. 480-470 BCE · Greek, Archaic · Attributed to Exekias</div>
+        </div>
+        <div class="object-card-arrow">→</div>
+      </div>
+
+    </div>
+
+    <div class="act-nav-strip">
+      <button class="act-nav-btn" onclick="showPageAtHero('act-2')">
+        <div class="nav-dir-label">← Previous Act</div>
+        <div class="nav-act-name">II · From Vessel to Vessel</div>
+      </button>
+      <button class="act-nav-btn" onclick="showPageAtHero('act-4')" style="text-align:right; align-items:flex-end;">
+        <div class="nav-dir-label">Next Act →</div>
+        <div class="nav-act-name">IV · Wine, Festivals & the Dead</div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- PAGE: ACT IV — Wine, Festivals & the Dead -->
+<!-- ══════════════════════════════════════════ -->
+<div class="page act-page" id="page-act-4">
+  <div class="act-hero">
+    <div class="act-hero-bg"></div>
+    <div class="frieze-strip image-frieze3">
+   <img src="Act-4/Frieze1.png" alt="kids">
+   <img src="Act-4/Frieze2.png" alt="kids">
+   <img src="Act-4/Frieze1.png" alt="kids">
+   <img src="Act-4/Frieze2.png" alt="kids">
+   <img src="Act-4/Frieze1.png" alt="kids">
+   <img src="Act-4/Frieze2.png" alt="kids">
+   <img src="Act-4/Frieze1.png" alt="kids">
+   <img src="Act-4/Frieze2.png" alt="kids">
+   <img src="Act-4/Frieze1.png" alt="kids">
+   <img src="Act-4/Frieze2.png" alt="kids">
+   <img src="Act-4/Frieze1.png" alt="kids">
+   <img src="Act-4/Frieze2.png" alt="kids">
+   <img src="Act-4/Frieze1.png" alt="kids">
+   <img src="Act-4/Frieze2.png" alt="kids">
+</div>
+
+    <div class="act-hero-content reveal-on-scroll" id="act-4-hero">
+      <div class="act-number">Act IV · Objects 11–13</div>
+      <div class="act-title">Wine, Festivals<br>& the Dead</div>
+      <span class="act-title-italic">The Anthesteria and the World Beyond</span>
+    </div>
+  </div>
+
+  <div class="act-body">
+    <div class="act-narrative">
+      <div class="act-narrative-text">
+        <p>Wine marked life at every stage in Ancient Greece. At festivals like the <em>Anthesteria</em>, which celebrated the opening of new wine, children, women, and men all participated in rituals connected to Dionysus.</p>
+        <p>These celebrations also blurred the boundaries between the living and the dead. During the festival, the spirits of the deceased were believed to return, and wine played a role in both welcoming and sending the departed away. </p>
+        <p>Vessels for wine were not only used in life but placed in tombs as well. Together, the objects in this last section trace wine’s presence from childhood to the afterlife.</p>
+      </div>
+    </div>
+
+    <div class="objects-label">Objects in this section</div>
+    <div class="objects-grid objects-grid-3">
+
+      <div class="object-card" onclick="showObject(11)">
+        <div class="object-card-img">
+        <img src="act-4/chous.png" alt=" ROM Chous ">
+        </div>
+        <div class="object-card-info">
+          <div class="object-card-num">Object 11</div>
+          <div class="object-card-title">Chous (jug) </div>
+          <div class="object-card-date">c. 425-400 BCE · Greek, Classical</div>
+        </div>
+        <div class="object-card-arrow">→</div>
+      </div>
+
+      <div class="object-card" onclick="showObject(12)">
+        <div class="object-card-img">
+        <img src="act-4/Stamnos.png" alt=" Ladies Stamnos ">
+        </div>
+        <div class="object-card-info">
+          <div class="object-card-num">Object 12</div>
+          <div class="object-card-title">Stamnos with Female Worshippers</div>
+          <div class="object-card-date">c. 450 BCE · Greek, Early Classical</div>
+        </div>
+        <div class="object-card-arrow">→</div>
+      </div>
+
+      <div class="object-card" onclick="showObject(13)">
+        <div class="object-card-img">
+        <img src="act-4/Rhyton.png" alt=" Rhyton of Bull ">
+        </div>
+        <div class="object-card-info">
+          <div class="object-card-num">Object 13</div>
+          <div class="object-card-title">Bull-Shaped Rhyton </div>
+          <div class="object-card-date">After 350 BCE · Greco-Italian </div>
+        </div>
+        <div class="object-card-arrow">→</div>
+      </div>
+
+    </div>
+
+    <div class="act-nav-strip">
+      <button class="act-nav-btn" onclick="showPageAtHero('act-3')">
+        <div class="nav-dir-label">← Previous Act</div>
+        <div class="nav-act-name">III · The Symposium</div>
+      </button>
+      <button class="act-nav-btn" onclick="showPage('final')" style="text-align:right; align-items:flex-end;">
+        <div class="nav-dir-label">Continue →</div>
+        <div class="nav-act-name">Further Reading</div>
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════ -->
+<!-- PAGE: OBJECT DETAIL (dynamic)            -->
+<!-- ══════════════════════════════════════════ -->
+<div class="page object-page" id="page-object">
+  <div class="object-topbar">
+    <div class="object-topbar-back" id="obj-back-btn">← Back to section</div>
+    <div class="object-topbar-breadcrumb" id="obj-breadcrumb">Section 001 · The Vine & the God</div>
+    <div class="object-topbar-counter" id="obj-counter">Object 1 of 12</div>
+  </div>
+
+  <div class="object-layout">
+    <div class="object-img-pane">
+    <button class="carousel-arrow carousel-arrow-left" id="obj-img-prev">‹</button>
+  <div class="object-img-main" id="obj-img-pane">
+    <div class="object-img-placeholder">
+      <p>Image pending</p>
+    </div>
+  </div>
+  
+  <button class="carousel-arrow carousel-arrow-right" id="obj-img-next">›</button>
+
+  <div class="object-thumbs" id="obj-thumbs"></div>
+    </div>
+
+    <div class="object-info-pane" id="obj-info-pane">
+      <div class="object-section-tag" id="obj-section-tag">Section 001 · The Vine & the God</div>
+      <div class="object-h1" id="obj-title">Storage Vessel for Wine</div>
+      <div class="object-date-line" id="obj-date">1539–1292 BCE · Egyptian</div>
+      <div class="object-inst-line" id="obj-inst">Penn Museum, E14369A</div>
+
+      <div class="object-label-text" id="obj-label"></div>
+
+      <div class="object-meta-grid" id="obj-meta"></div>
+
+      <div class="object-fun-fact" id="obj-fun-fact-wrap">
+        <div class="fun-fact-label">Fun Fact</div>
+        <div class="fun-fact-rule"></div>
+        <div class="fun-fact-text" id="obj-fun-fact"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="object-nav-strip">
+    <button class="obj-nav-btn" id="obj-prev-btn">
+      <div class="obj-nav-dir">← Previous object</div>
+      <div class="obj-nav-name" id="obj-prev-name"></div>
+    </button>
+    <button class="obj-nav-btn" id="obj-next-btn" style="text-align:right;">
+      <div class="obj-nav-dir">Next object →</div>
+      <div class="obj-nav-name" id="obj-next-name"></div>
+    </button>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════ -->
+<!-- PAGE: FINAL — Further Reading & Biblio   -->
+<!-- ══════════════════════════════════════════ -->
+<div class="page" id="page-final">
+  <div class="final-page">
+    <div class="final-eyebrow">From Vine to Vessel · 2026</div>
+    <div class="final-h1">Further Reading</div>
+
+    <div class="final-section-title">Curatorial Note</div>
+    <div class="final-text">
+      <p><em>From Vine to Vessel: Wine, Ritual, and the Art of the Greek Symposium</em> was developed as part of the University of Toronto MA Art History program in partnership with the Royal Ontario Museum. The exhibition draws on loans from the Penn Museum, the Museum of Fine Arts Boston, the Metropolitan Museum of Art, and the Louvre.</p>
+      <br>
+      <p>The twelve objects presented here were selected to trace a single, continuous argument: that wine in Ancient Greece was never merely a beverage, but a technology of social cohesion, ritual meaning, and artistic expression — and that the vessels made to hold it were some of the most sophisticated objects the ancient world produced.</p>
+    </div>
+
+    <div class="final-section-title">Select Bibliography</div>
+    <ul class="bib-list">
+      <li>Lissarrague, François. <em>The Aesthetics of the Greek Banquet: Images of Wine and Ritual</em>. Princeton University Press, 1990.</li>
+      <li>Murray, Oswyn, ed. <em>Sympotica: A Symposium on the Symposion</em>. Oxford: Clarendon Press, 1990.</li>
+      <li>Carpenter, Thomas H. <em>Dionysian Imagery in Fifth-Century Athens</em>. Oxford: Clarendon Press, 1997.</li>
+      <li>Boardman, John. <em>Athenian Black Figure Vases</em>. London: Thames & Hudson, 1974.</li>
+      <li>Boardman, John. <em>Athenian Red Figure Vases: The Archaic Period</em>. London: Thames & Hudson, 1975.</li>
+      <li>Sparkes, Brian A. <em>The Red and the Black: Studies in Greek Pottery</em>. London: Routledge, 1996.</li>
+      <li>Dietler, Michael. "Alcohol: Anthropological/Archaeological Perspectives." <em>Annual Review of Anthropology</em> 35 (2006): 229–249.</li>
+      <li>Hamilton, Richard. <em>Choes and Anthesteria: Athenian Iconography and Ritual</em>. Ann Arbor: University of Michigan Press, 1992.</li>
+      <li>[Additional bibliography to be added]</li>
+    </ul>
+
+    <div class="final-section-title">Acknowledgements</div>
+    <div class="final-text">
+      The author gratefully acknowledges the support of [names], the lending institutions listed above, and the faculty of the University of Toronto Department of Art History.
+    </div>
+
+    <div class="final-closing">
+      <div class="final-closing-title">Dionysus Never Really Went Away.</div>
+      <div class="final-closing-text">The wine you drink today is a version of the very drink the Greeks called a gift of the gods.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════ -->
+<!-- DATA & ROUTING                           -->
+<!-- ══════════════════════════════════════════ -->
+<script>
+const OBJECTS = {
+  1: {
+    title: "Amphora with Scene of Dionysus",
+    date: "c. 540–530 BCE · Greek, Archaic · Attributed to Exekias",
+    images: [
+      "act-1/mfa-amphora.png",
+      "act-1/MFA-amphora_2.png",
+    ],
+    inst: '<a href="https://collections.mfa.org/objects/153422/twohandled-jar-amphora-with-dionysos-in-a-vineyard?ctx=e28e5202-4191-4091-8f1e-3f1823c4e494&idx=0" target="_blank">MFA Boston, 63.952</a>',
+    section: "001 · The Vine & the God",
+    act: "act-1",
+    type: "Amphora (Jar for Holding Liquids or Grain)",
+    technique: "black-figure ceramic",
+    label: `<div class="object-label-title">The God in the Vineyard</div>
+    <p>Dionysus sits beneath a canopy of grapevines, holding a <span class="hover-image-trigger">
+        Kantharos
+        <span class="hover-image-box">
+      <img src="act-1/kantharos.png" alt="kantharos">
+    </span>
+  </span>, 
+      a cup used for drinking wine.</p>
+      <p>Around him, <em>Satyrs</em> (his half-human, half-goat companions) climb, pick and carry grapes across the surface of the vase.</p>
+      <p>Look closely at the vines: they rise and spread above the god, filling the space with movement. Here winemaking is not just shown as labour, but as something ordered by Dionysus himself. From vine to cup, every stage of winemaking fell under his domain.</p>`,
+    meta: [["Object Type","Amphora (Jar for Holding Liquids or Grain)"],["Geography", "Attica, Athens, Greece"],["Medium","Wheel-thrown ceramic with Black-figure Vase Painting"],["Dimensions","D:33cm, H:51.4cm"],],
+    fact: ` <em>Twelve</em> miniature Satyrs frolick among the grapevines on this vase. Can you spot them all?`
+  },
+  2: {
+    title: "Storage Jar for Wine",
+    date: "c. 1353-1190 BCE · New Kingdom, Late Dynasty 18-Late Dynasty 19",
+    images: [
+      "act-1/storagejar.png",
+      "act-1/storagejar_2.png",
+      "act-1/storagejar_3.png",
+      "act-1/storagejar_4.png",
+      "act-1/storagejar_5.png",
+    ],
+    inst: `<a href="https://www.penn.museum/collections/object/209494" target="_blank">Penn Museum, E14368A-B</a>`,
+    section: "001 · The Vine & the God",
+    act: "act-1",
+    type: "Ḥs (Hes)-shaped vase (Vessel for liquid libations), for wine",
+    technique: "Ceramic with painted elements",
+    label:  ` <div class="object-label-title">A Gift From Elsewhere</div>
+    <p>Wine didn't begin in Greece. Long before Dionysus, cultures across the Ancient Mediterranean were cultivating and storing grapes in vessels like this one. 
+    Greek myth reflects this: Dionysus was said to have arrived from the East, bringing wine as a gift from beyond the Greek world. This jar predates the Greek vessels in this exhibition by nearly <em>a thousand years</em>, placing wine’s story firmly outside the boundaries of Greece itself.</p>`,
+    meta: [["Object Type","Ḥs (Hes)-shaped vessel for Wine"],["Geography","Egypt"],["Medium","Wheel-thrown and painted Ceramic"],["Dimensions","H. 93.5 cm; D. 25cm"],],
+    fact: `The Hieroglyphs on this jar tells us the type of wine that was stored in the jar (Hamu), as well as the owner of the tomb it was placed in (Menedjem).`
+  },
+  3: {
+    title: "Amphora with Winemaking Scene",
+    date: "c. 540–530 BCE · Greek, Archaic · Attributed to the Amasis Painter",
+    images:[
+      "act-1/martin.png",
+      "act-1/martin_2.png",
+      "act-1/martin_3.png",
+      "act-1/martin_4.png"
+    ],
+    inst: "Martin von Wagner Museum, L265; L282",
+    section: "001 · The Vine & the God",
+    act: "act-1",
+    type: "Amphora (Jar for Holding Liquids or Grain)",
+    technique: "Black-figure ceramic",
+    label: `<div class="object-label-title">The Labour of Transformation</div>
+    <p>Satyrs, Dionysus’ companions, are shown here doing something unexpected: <em>making wine</em>.</p>
+    <p>Look closely: they’re harvesting grapes, tread them underfoot to release their juice (must), and pour it into large jars, pithoi, set into the ground. This scene offers a clear visual record of ancient winemaking in practice.</p>
+    <p>Myth and labour are inseparable. The work of transforming grapes into wine unfolds under the presence of Dionysus, where even the most physical tasks take on a divine dimension.</p>`,
+    meta: [["Object Type","Amphora (Jar for Holding Liquids or Grain)"],["Geography","Attica, Athens, Greece"],["Medium","Wheel-thrown ceramic with black-figure Vase Painting"],["Dimensions","H. with lid: 42.15cm; without lid 34.5-34.8cm; W. across handles 27.0cm"],],
+    fact: `Turn the vessel around, and the story of wine continues: the reverse side of this vessel shows Dionysus in the aftermath of drinking.`
+  },
+  4: {
+    title: "Wine Transport Amphora",
+    date: "c. 560–550 BCE · Greek, Archaic",
+    images:["act-2/winetransportamphora.png"],
+    inst: `<a href="https://www.britishmuseum.org/collection/object/G_2006-0331-12" target="_blank">British Museum, 2006,0331.12</a>`,
+    section: "002 · From Vessel to Vessel",
+    act: "act-2",
+    type: "Transport Amphora for Wine",
+    technique: "Wheel-thrown Ceramic",
+    label: `<div class="object-label-title">Built for Transport</div>
+    <p>This amphora was built to move. Its narrow neck, rounded body and pointed base made it easy to 
+      <span class="hover-image-trigger">
+       carry, stack and secure for transport
+        <span class="hover-image-box">
+      <img src="act-1/amphorastack.jpg" alt="stack">
+    </span>
+  </span> by land and sea. This specific form, known as a <em>Corinthian Type B amphora</em>, was widely used for transporting wine. Millions have been found, pointing to the scale of the Ancient Mediterranean trade.</p>`,
+    meta: [["Object Type","Transport Amphora for Wine, type Corinthian B"],["Geography","Corinth, Greece"],["Medium","Wheel-thrown Ceramic"],["Dimensions","D.42cm; H.51.4cm"],],
+    fact: `A standard Attic amphora held about 26 litres of wine, enough for <em>roughly 200 servings</em> when diluted with water.`
+  },
+  5: {
+    title: "Fragment of an Amphora Handle",
+    date: "c. 323-30 BCE · Greek, Hellenistic",
+    images: ["act-2/handle.png"],
+    inst: `<a href="https://collections.rom.on.ca/objects/376495/fragment-of-an-amphora-handle-with-rectangular-stamp-eiapi;jsessionid=BD60CFB1DA370D24C106C8DC5DA0A982?ctx=d2e093b867f6161670e9abb61a5f796f0e2e0cce&idx=0" target="_blank">ROM, 910X255.24 </a>`,
+    section: "002 · From Vessel to Vessel",
+    act: "act-2",
+    technique: "bisque earthenware, stamped",
+    label: `<div class="object-label-title">The Ancient Wine Label</div>
+    <p>This fragment once formed part of a large transport amphora, likely nearly a metre tall. Though only the handle survives, it preserves a crucial detail: <em>a stamped inscription</em>.</p>
+    <p>The stamp records the name of a Rhodian official and the month of production. Marks like this acted as a system of certification, tracking origin and date, much like a modern wine label.</p>`,
+    meta: [["Object Type","Fragment of a transport Amphora Handle"],["Geography","Rhodes, Greece"],["Medium","unglazed, stamped earthenware"],["Dimensions","W:7.3cm, H:4.4cm"],],
+    fact: `Amphorae were also used to transport other goods in the Mediterranean such as olive oil, pickles, and a type of fish sauce called garum.`
+  },
+  6: {
+    title: "Column-Krater",
+    date: "c. 440 BCE · Greek, Classical · Attributed to the Naples Painter",
+    images: ["act-2/krater.png",
+    "act-2/krater_2.png",
+    "act-2/krater_3.png",
+    "act-2/krater_4.png",
+    "act-2/krater_5.png",
+    ],
+    inst:`<a href="https://art.thewalters.org/object/48.67/" target="_blank">The Walters Art Museum, 48.67</a>`,
+    section: "002 · From Vessel to Vessel",
+    act: "act-2",
+    type: "Krater (Large Vessel for Mixing Wine with Water)",
+    technique: "Terracotta, red-figure Ceramic",
+    label: `<div class="object-label-title">From Produce to Product</div>
+      <p>Wine did not arrive ready to drink. It moved from vessel to vessel. Before serving, it was mixed with water in kraters like this one.</p>
+      <p>Painted on the surface is a symposium: men recline on couches, drink, listen to music, and converse. These gatherings were central to elite Greek social life.</p>
+      <p>From here, wine leaves the world of trade and enters the rituals of the symposium.</p>`,
+    meta: [["Object Type","Krater (Large Vessel for Mixing Wine with Water)"],["Geography", "Athens, Attica, Greece"],["Medium","Wheel-thrown terracotta with red-figure vase painting"],["Dimensions","H. 39cm; D:31.5cm"]],
+    fact: `This krater travelled from <em>Athens to Tuscany</em>, where it was excavated from a tomb in 1879. Its presence in an Etruscan burial is a reminder of how far Greek culture & wine travelled in the ancient world.`
+  }, 
+  7: {title: "Kylix with Boxers and Symposiast",
+    date: "c. 490–480 BCE · Greek, Archaic",
+    images: ["act-3/romkylix.png",
+      "act-3/romkylix2.png",
+      "act-3/romkylix3.png",
+      "act-3/romkylix4.png"
+    ],
+    inst: `<a href="https://collections.rom.on.ca/objects/349771/attic-redfigure-kylix-with-a-symposiast-and-a-boxing-scene" target="_blank">ROM, 919.5.23</a>`,
+    section: "003 · The Symposium",
+    act: "act-3",
+    type: "Kylix (Drinking cup for wine)",
+    technique: "Terracotta, red-figure ceramic",
+    label: `<div class="object-label-title">Working Hard, Playing Hard</div>
+    <p>This cup tells two stories.</p>
+    <p>On the outside, a man trains two youths in boxing. Inside, he reclines on a 
+      <span class="hover-image-trigger">
+       kline (couch)
+        <span class="hover-image-box">
+      <img src="act-3/kline.png" alt="kline">
+    </span>
+    </span>, playing a drinking game known as <em>kottabos</em>. </p>
+    <p>Turn the cup from the exterior to interior, and the scene shifts from discipline to leisure. Together, they reflect two key aspects of elite Greek male life: training the body and participating in the symposium.</p>`,
+    meta: [["Object Type","Kylix (Drinking cup for wine)"],["Geography","Athens, Attica, Greece"],["Medium","Wheel-thrown terracotta with red-figure vase painting"],["Dimensions","H. 9.7cm; D. 30.6 cm"],],
+    fact: `The <em>Kottabos</em> was a popular drinking game and a test of skill where players flicked the dregs of wine from a kylix at a target.`
+  },
+  8: {
+    title: "Oinochoe in the Shape of Dionysus Riding a Panther",
+    date: "c. 350 BCE · Greek, Classical",
+    images: ["act-3/oinochoe.png",
+    ],
+    inst: `<a href="https://collections.rom.on.ca/objects/343622/attic-plastic-oinochoe-shaped-as-dionysos-riding-a-panther?ctx=a58416c97c3f11f67871421244d9848e31007928&idx=8" target="_blank">ROM, 919.5.17</a>`,
+    section: "003 · The Symposium",
+    act: "act-3",
+    type: "Oinochoe (small wine jug)",
+    technique: "wheel-thrown and moulded earthenware",
+    label: `<div class="object-label-title">Wine Poured From the God</div>
+    <p>Look closely. What do you see?</p>
+    <p>This jug is mythology made functional. It is shaped as Dionysus himself, holding grapes and riding a panther, his sacred animal.</p>
+    <p>In the symposium, wine was drawn from a <span class="hover-image-trigger">
+       krater
+        <span class="hover-image-box">
+      <img src="act-2/krater.png" alt="krater">
+    </span>
+    </span> and poured into cups using vessels like this one. To use it was to pour from the god himself, making his presence a part of the act of drinking.</p>`,
+    meta: [["Object Type","Oinochoe (small wine jug)"],["Geography","Athens, Attica, Greece"],["Medium","Wheel-thrown and Moulded earthenware with slip and polychrome"],["Dimensions","H. 7.6cm; W. 5.8cm; D. 4.2cm"],],
+    fact: `"Plastic" vases, which were vessels sculpted to look like human or animal figures, were popular gifts and novelty items at symposia.`
+  },
+  9: {
+    title: "Psykter",
+    date: "c. 520–510 BCE · Greek, Archaic · Attributed to Oltos",
+    images: ["act-3/psykter.png",
+      "act-3/psykter_2.png",
+      "act-3/psykter_3.png"
+    ],
+    inst: '<a href="https://www.metmuseum.org/art/collection/search/255946" target="_blank">Metropolitan Museum of Art, 1989.281.69</a>' , 
+    section: "003 · The Symposium",
+    act: "act-3",
+    type: "Psykter (vessel for cooling wine)",
+    technique: "Terracotta, red-figure ceramic",
+    label: `<div class="object-label-title">Wine, Engineered</div>
+    <p>Wine at a symposium was never simply poured and drunk. It was staged. </p>
+    <p>Psykters like this one were likely filled with ice or snow and floated inside a <span class="hover-image-trigger">
+       krater
+        <span class="hover-image-box">
+      <img src="act-2/krater.png" alt="krater">
+    </span>
+    </span> to keep wine cold as a small act of luxury.</p>
+    <p>Around the vessel, soldiers in full armour ride dolphins. As the psykter bobbed in the wine, the dolphins would have appeared to leap and dive across its surface, animating the scene and delighting the symposium guests. </p>`,
+    meta: [["Object Type","Psykter (vessel for cooling wine)"],["Geography","Athens, Attica, Greece"],["Medium"," Wheel-thrown earthenware with red-Figure vase painting"],["Dimensions","H. 30.20cm"],],
+    fact: `Psykters were short-lived luxury objects: they were only produced for about 40 years between 520 and 480 BCE.`
+  },
+  10: {
+   title: "Kylix, Known as the Dionysus Cup",
+    date: "c. 540- 530 BCE · Greek, Archaic · Attributed to Exekias",
+    images: ["act-3/Kylix.png",
+      "act-3/Kylix_2.png",
+      "act-3/Kylix_3.png",
+    ],
+    inst: "Staatliche Antikensammlungen, 8729",
+    section: "003 · The Symposium",
+    act: "act-3",
+    type: "Kylix (drinking cup)",
+    technique: "Terracotta, black-figure ceramic",
+    label: `<div class="object-label-title">Theatre and Transformation</div>
+    <p>Kylikes like this one were the standard drinking cups of the symposium – wide, shallow vessels designed to be lifted and tilted as wine was consumed.</p>
+    <p>The painted eyes on the exterior turn drinking into performance. As the cup is raised, the drinker’s face disappears, to be replaced by the wide, staring eyes of the vessel itself.</p>
+    <p>These eyes may also have served as protective talismans, meant to ward off evil from the drinker.</p>`,
+    meta: [["Object Type","Kylix (drinking cup)"],["Geography","Athens, Attica, Greece"],["Medium","Wheel-thrown ceramic with Black-Figure Vase Painting"],["Dimensions","H. 12.8cm; D. 30.4cm"],],
+    fact: `The interior of this cup shows Dionysus sailing across the sea, only revealed as the drinker empties the wine from his cup. This links the act of drinking directly to the god.`
+  },
+  11: {
+    title: "Chous (Jug) with Boy",
+    date: "c. 425-400 BCE · Greek, Classical",
+    images: ["act-4/Chous.png",
+      "act-4/Chous_2.png",
+      "act-4/Chous_3.png",
+      "act-4/Chous_4.png",
+    ],
+    inst: `<a href="https://collections.rom.on.ca/objects/324390/attic-redfigure-chous-jug-showing-a-boy-playing?ctx=503de5701479c2bdb819f55de2f1953c58bfb210&idx=84" target="_blank">ROM, 923.13.45</a>`,
+    section: "004 · Wine, Festivals & the Dead",
+    act: "act-4",
+    type: "Chous (festival wine jug)",
+    technique: "Red-figure ceramic",
+    label: `<div class="object-label-title">The First Taste of Wine </div>
+    <p>The Chous was a small jug associated with the <em>Anthesteria</em>, a festival marking the opening of new wine. Children around the age of three were given their first taste of wine from vessels like this one, marking their participation in the rituals of the festival.</p>
+    <p>On this example, a young boy is seen playing with a ball, flanked by a chous and grapes- an image that reflects the vessel’s intended user. </p>`,
+    meta: [["Object Type","Chous (festival wine jug)"],["Geography","Athens, Attica, Greece"],["Medium","Wheel thrown, red-figure ceramic"],["Dimensions","N/A"]],
+    fact: `There are over a thousand examples of Choes like this one have survived – evidence of how common these vessels once were.`
+  },
+  12: {
+    title: "Stamnos",
+    date: "c. 450 BCE · Greek, Early Classical · Attributed to the Villa Giulia Painter",
+    images: ["act-4/Stamnos.png",
+      "act-4/Stamnos_2.png",
+      "act-4/Stamnos_3.png",
+    ],
+    inst: `<a href="https://collections.mfa.org/objects/153877/lidded-jar-stamnos-depicting-women-congregated-about-an-id?ctx=2fe07a8c-add7-4cca-98c1-3a284ccdb12e&idx=0" target="_blank">MFA, 90.155a</a>`,
+    section: "004 · Wine, Festivals & the Dead",
+    act: "act-4",
+    type: "Stamnos (Lidded jar)",
+    technique: "Red-figure ceramic",
+    label: `<div class="object-label-title">Women's Worship</div>
+    <p>Dionysian festivals weren’t reserved for men: women also honoured the god.</p>
+    <p>Here, women gather around an image of Dionysus while serving wine. The god is represented by a pole adorned with a mask and draped cloth; a simple form used to represent his presence.</p>
+    <p>The scene may be a depiction of the <em>Lenaia</em>, a Dionysian festival in which women played a central role. It offers a glimpse of wine culture beyond the symposium and beyond male spaces.</p>`,
+    meta: [["Object Type","Stamnos (Lidded Jar)"],["Geography","Athens, Attica, Greece"],["Medium","Wheel-thrown earthenware,red-figure vase painting"],["Dimensions","H:47.4cm, D:33.4cm"]],
+    fact: `Female worshippers of Dionysus, often called
+     <span class="hover-image-trigger">
+       Maenads
+        <span class="hover-image-box">
+      <img src="act-4/maenads.jpg" alt="maenads">
+    </span>
+    </span>, played a role in festivals like the Lenaia.`
+  },
+  13: {
+    title: "Bull-Shaped Rhyton",
+    date: "c. After 350 BCE · Greco-Italian",
+    images: ["act-4/Rhyton.png",
+      "act-4/Rhyton_2.png",
+      "act-4/Rhyton_3.png",
+      "act-4/Rhyton_4.png",
+    ],
+    inst: `<a href="https://risdmuseum.org/art-design/collection/drinking-cup-rhyton-26166" target="_blank">RISD, 26.166</a>`,
+    section: "004 · Wine, Festivals & the Dead",
+    act: "act-4",
+    type: "Rhyton (Cup for Drinking or Libations)",
+    technique: "Red-figure ceramic",
+    label: `<div class="object-label-title">Accompanied Into the Afterlife</div>
+    <p>Shaped as a bull’s head, vessels like this were used to pour wine in ritual acts known as libations. </p>
+    <p>In life, wine was shared among the living. In death, it was offered to the deceased, and for the powers of the underworld. Vessels like this were placed in tombs to equip the dead for a banquet that, it was hoped, continued beyond the grave.</p>
+    <p>The journey of wine didn’t end with death. It accompanied Ancient Greeks into the world beyond.</p>`,
+    meta: [["Object Type","Rhyton (Cup for Drinking or Libations)"],["Geography","Greco-Italian"],["Medium","Wheel-thrown and Moulded earthenware, red-figure vase painting"],["Dimensions","H:17.8cm"]],
+    fact: `The name of this type of vessel, Rhyton, comes from the Greek word <em>rheo</em>, which means "to flow".`
+  }
+};
+
+let currentPage = 'landing';
+let currentObjId = null;
+const pageScrollPositions = {};
+let currentObjImageIndex = 0;  
+
+function createZoomableImage(src, alt, enableZoom = true) {
+  if (!enableZoom) {
+    return `<img src="${src}" alt="${alt}">`;
+  }
+
+  return `
+    <div class="object-zoom-wrap">
+      <img class="object-zoom-img" src="${src}" alt="${alt}">
+    </div>
+  `;
+}
+
+function attachZoomHandlers() {
+  const wraps = document.querySelectorAll('.object-zoom-wrap');
+
+  wraps.forEach(wrap => {
+    const img = wrap.querySelector('.object-zoom-img');
+    if (!img) return;
+
+    wrap.addEventListener('mouseenter', () => {
+      wrap.classList.add('is-zooming');
+    });
+
+    wrap.addEventListener('mouseleave', () => {
+      wrap.classList.remove('is-zooming');
+      img.style.transformOrigin = 'center center';
+    });
+
+    wrap.addEventListener('mousemove', e => {
+      const rect = wrap.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      img.style.transformOrigin = `${x}% ${y}%`;
+    });
+  });
+}
+
+function renderObjectCarousel(obj) {
+  const images = obj.images && obj.images.length ? obj.images : [];
+  const imgPane = document.getElementById('obj-img-pane');
+  const thumbs = document.getElementById('obj-thumbs');
+  const prevBtn = document.getElementById('obj-img-prev');
+  const nextBtn = document.getElementById('obj-img-next');
+
+  if (!images.length) {
+    imgPane.innerHTML = `<div class="object-img-placeholder"><p>Image pending</p></div>`;
+    thumbs.innerHTML = '';
+    prevBtn.style.visibility = 'hidden';
+    nextBtn.style.visibility = 'hidden';
+    return;
+  }
+  imgPane.innerHTML = createZoomableImage(
+  images[currentObjImageIndex],
+  obj.title,
+  obj.zoomable !== false
+);
+attachZoomHandlers();
+  
+
+  thumbs.innerHTML = images.map((src, index) => `
+    <button class="object-thumb ${index === currentObjImageIndex ? 'active' : ''}" data-index="${index}">
+      <img src="${src}" alt="${obj.title} thumbnail ${index + 1}">
+    </button>
+  `).join('');
+
+  prevBtn.style.visibility = images.length > 1 ? 'visible' : 'hidden';
+  nextBtn.style.visibility = images.length > 1 ? 'visible' : 'hidden';
+
+  prevBtn.onclick = () => {
+    currentObjImageIndex = (currentObjImageIndex - 1 + images.length) % images.length;
+    renderObjectCarousel(obj);
+  };
+
+  nextBtn.onclick = () => {
+    currentObjImageIndex = (currentObjImageIndex + 1) % images.length;
+    renderObjectCarousel(obj);
+  };
+
+  thumbs.querySelectorAll('.object-thumb').forEach(btn => {
+    btn.onclick = () => {
+      currentObjImageIndex = Number(btn.dataset.index);
+      renderObjectCarousel(obj);
+    };
+  });
+}
+
+
+function handleEnter() {
+  const cue = document.querySelector('.scroll-cue');
+  const overlay = document.getElementById('landing-transition');
+
+  if (overlay) {
+    overlay.classList.add('visible');
+  }
+
+  setTimeout(() => {
+    if (cue) {
+      cue.classList.add('visible');
+    }
+  }, 300);
+
+  setTimeout(() => {
+    transitionToPage('act-1', { scrollToHero: true });
+  }, 900);
+}
+
+
+function showPage(pageId, resetScroll = false) {
+  // Save scroll position of current page
+  pageScrollPositions[currentPage] = window.scrollY;
+
+  // Hide all pages
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+
+  // Show target page
+  const target = document.getElementById('page-' + pageId);
+  if (target) {
+    target.classList.add('active');
+  }
+
+  currentPage = pageId;
+
+  if (pageId !== 'object') {
+    const objectPage = document.getElementById('page-object');
+    if (objectPage) objectPage.scrollTop = 0;
+  }
+
+  if (pageId === 'act-1') {
+  requestAnimationFrame(updateAct1Reveal);
+  }
+
+ 
+  if (resetScroll) {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }
+
+  // Update nav highlight
+  document.querySelectorAll('.topbar-nav a').forEach(a => a.classList.remove('active-nav'));
+  const navEl = document.getElementById('nav-' + pageId);
+  if (navEl) navEl.classList.add('active-nav');
+
+  const counter = document.getElementById('topbar-counter');
+  counter.textContent = '';
+
+  requestAnimationFrame(() => {
+    if (target && target.classList.contains('act-page')) {
+      target.classList.remove('is-transitioning', 'is-entered');
+      void target.offsetWidth;
+      target.classList.add('is-transitioning');
+      requestAnimationFrame(() => {
+        target.classList.add('is-entered');
+      });
+    }
+    revealElementsInView(target || document);
+    updateProgressBar();
+  });
+}
+
+function showPageAtHero(pageId) {
+  transitionToPage(pageId, { scrollToHero: true });
+}
+
+
+function transitionToPage(pageId, options = {}) {
+  const { scrollToHero = false, afterShow = null, buildUp = true } = options;
+  const overlay = document.getElementById('page-transition-overlay');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const finishNavigation = () => {
+    showPage(pageId, true);
+
+    requestAnimationFrame(() => {
+      if (scrollToHero) {
+        const target = document.getElementById(pageId + '-hero');
+        const topbar = document.querySelector('.topbar');
+        if (target) {
+          const offset = (topbar ? topbar.offsetHeight : 0) + 12;
+          const y = target.getBoundingClientRect().top + window.pageYOffset - offset;
+          window.scrollTo({ top: y, behavior: reducedMotion ? 'auto' : 'smooth' });
+        }
+      }
+
+      if (typeof afterShow === 'function') afterShow();
+
+      if (overlay && buildUp && !reducedMotion) {
+        window.setTimeout(() => overlay.classList.remove('is-active'), 140);
+      }
+    });
+  };
+
+  if (!overlay || reducedMotion || !buildUp) {
+    finishNavigation();
+    return;
+  }
+
+  overlay.classList.add('is-active');
+  window.setTimeout(finishNavigation, 520);
+}
+
+function navigateToSection(pageId, options = {}) {
+  const objectPage = document.getElementById('page-object');
+  if (objectPage.classList.contains('active')) {
+    objectPage.classList.remove('active');
+  }
+  transitionToPage(pageId, options);
+}
+
+function getNextSectionTarget(actId) {
+  const order = ['act-1', 'act-2', 'act-3', 'act-4', 'final'];
+  const index = order.indexOf(actId);
+  return index >= 0 && index < order.length - 1 ? order[index + 1] : null;
+}
+
+function showObject(id) {
+  const obj = OBJECTS[id];
+  if (!obj) return;
+  currentObjId = id;
+
+  document.getElementById('obj-section-tag').textContent = 'Section ' + obj.section;
+  document.getElementById('obj-breadcrumb').textContent = 'Section ' + obj.section;
+  document.getElementById('obj-counter').textContent = 'Object ' + id + ' of 12';
+  document.getElementById('obj-title').textContent = obj.title;
+  document.getElementById('obj-date').textContent = obj.date;
+  document.getElementById('obj-inst').innerHTML = obj.inst;
+  document.getElementById('obj-label').innerHTML = obj.label;
+
+  const metaGrid = document.getElementById('obj-meta');
+  metaGrid.innerHTML = obj.meta.map(([l, v]) =>
+    `<div class="object-meta-cell"><div class="meta-lbl">${l}</div><div class="meta-val">${v}</div></div>`
+  ).join('');
+
+  document.getElementById('obj-fun-fact').innerHTML = obj.fact;
+
+  currentObjImageIndex = 0;
+  renderObjectCarousel(obj);
+
+  const actObjects = Object.keys(OBJECTS)
+    .map(Number)
+    .filter(objId => OBJECTS[objId].act === obj.act);
+
+  const currentIndex = actObjects.indexOf(id);
+  const prevId = currentIndex > 0 ? actObjects[currentIndex - 1] : null;
+  const nextId = currentIndex < actObjects.length - 1 ? actObjects[currentIndex + 1] : null;
+
+  const prevBtn = document.getElementById('obj-prev-btn');
+  const nextBtn = document.getElementById('obj-next-btn');
+
+  if (prevId) {
+    document.getElementById('obj-prev-name').textContent = OBJECTS[prevId].title;
+    prevBtn.onclick = () => showObject(prevId);
+    prevBtn.style.opacity = '1';
+    prevBtn.style.pointerEvents = 'auto';
+  } else {
+    document.getElementById('obj-prev-name').textContent = '';
+    prevBtn.onclick = null;
+    prevBtn.style.opacity = '0.3';
+    prevBtn.style.pointerEvents = 'none';
+  }
+
+  if (nextId) {
+    nextBtn.classList.remove('is-section-jump');
+    nextBtn.querySelector('.obj-nav-dir').textContent = 'Next object →';
+    document.getElementById('obj-next-name').textContent = OBJECTS[nextId].title;
+    nextBtn.onclick = () => showObject(nextId);
+    nextBtn.style.opacity = '1';
+    nextBtn.style.pointerEvents = 'auto';
+  } else {
+    const nextSection = getNextSectionTarget(obj.act);
+    if (nextSection) {
+      nextBtn.classList.add('is-section-jump');
+      nextBtn.querySelector('.obj-nav-dir').textContent = nextSection === 'final' ? 'Continue →' : 'Next section →';
+      document.getElementById('obj-next-name').textContent = nextSection === 'final'
+        ? 'Further Reading'
+        : document.querySelector('#nav-' + nextSection)?.textContent?.replace(/^\s*[IVX]+\s·\s*/, '') || 'Next section';
+      nextBtn.onclick = () => navigateToSection(nextSection, { scrollToHero: nextSection !== 'final' });
+      nextBtn.style.opacity = '1';
+      nextBtn.style.pointerEvents = 'auto';
+    } else {
+      nextBtn.classList.remove('is-section-jump');
+      nextBtn.querySelector('.obj-nav-dir').textContent = 'Next object →';
+      document.getElementById('obj-next-name').textContent = '';
+      nextBtn.onclick = null;
+      nextBtn.style.opacity = '0.3';
+      nextBtn.style.pointerEvents = 'none';
+    }
+  }
+
+  document.getElementById('obj-back-btn').onclick = () => {
+    document.getElementById('page-object').classList.remove('active');
+    currentPage = obj.act;
+    document.querySelectorAll('.topbar-nav a').forEach(a => a.classList.remove('active-nav'));
+    const navEl = document.getElementById('nav-' + obj.act);
+    if (navEl) navEl.classList.add('active-nav');
+  };
+
+  const objectPage = document.getElementById('page-object');
+  objectPage.classList.add('active');
+  objectPage.scrollTop = 0;
+  currentPage = 'object';
+  requestAnimationFrame(() => {
+    revealElementsInView(objectPage);
+    updateProgressBar();
+  });
+}
+
+function updateAct1Reveal() {
+  const hero = document.querySelector('.act-1-hero-bg-image');
+  if (!hero) return;
+
+  const rect = hero.getBoundingClientRect();
+  const windowHeight = window.innerHeight;
+
+  const start = windowHeight * 0.95;
+  const end = windowHeight * 0.2;
+
+  let progress = (start - rect.top) / (start - end);
+  progress = Math.max(0, Math.min(progress, 1));
+
+  const minOpacity = 0.0;
+  const maxOpacity = 0.5;
+  const overlayOpacity = 1 - (progress * 0.25); 
+  hero.style.setProperty('--act1-fade', overlayOpacity);
+}
+
+window.addEventListener('scroll', updateAct1Reveal);
+window.addEventListener('resize', updateAct1Reveal);
+window.addEventListener('load', updateAct1Reveal);
+
+
+
+
+const progressBar = document.getElementById('progress-bar');
+
+function updateProgressBar() {
+  if (!progressBar) return;
+  const activePage = document.querySelector('.page.active');
+  if (!activePage) return;
+
+  const isOverlayObject = activePage.id === 'page-object';
+  const scrollRoot = isOverlayObject ? activePage : window;
+  const scrollTop = isOverlayObject ? activePage.scrollTop : window.scrollY;
+  const scrollHeight = isOverlayObject
+    ? activePage.scrollHeight - activePage.clientHeight
+    : document.documentElement.scrollHeight - window.innerHeight;
+
+  const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+  progressBar.style.width = `${Math.max(0, Math.min(progress, 100))}%`;
+}
+
+function revealElementsInView(scope = document) {
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const elements = scope.querySelectorAll('.reveal-on-scroll');
+
+  elements.forEach(el => {
+    if (reducedMotion) {
+      el.classList.add('is-visible');
+      return;
+    }
+    const rect = el.getBoundingClientRect();
+    const threshold = window.innerHeight * 0.88;
+    if (rect.top < threshold) {
+      el.classList.add('is-visible');
+    }
+  });
+}
+
+
+window.addEventListener('scroll', () => {
+  revealElementsInView(document);
+  updateProgressBar();
+});
+
+document.getElementById('page-object').addEventListener('scroll', updateProgressBar);
+window.addEventListener('resize', () => {
+  revealElementsInView(document);
+  updateProgressBar();
+});
+
+showPage('landing', true);
+revealElementsInView(document);
+updateProgressBar();
+</script>
+
+</body>
+</html>
